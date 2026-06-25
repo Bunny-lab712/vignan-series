@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Arige Srikanth — AI×IoT Lecture Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050810;
+    --surface: #0c1120;
+    --surface2: #111827;
+    --border: #1e2d45;
+    --accent1: #00f5c4; /* teal-mint */
+    --accent2: #7c6aff; /* violet */
+    --accent3: #ff6b35; /* ember */
+    --accent4: #ffd166; /* gold */
+    --text: #e8edf5;
+    --muted: #6b7fa3;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  
+  body.modal-open { overflow: hidden; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 40px;
+    background: rgba(5,8,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--accent1);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent1);
+    border-color: var(--accent1);
+    background: rgba(0,245,196,0.06);
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(124,106,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(0,245,196,0.07) 0%, transparent 60%);
+  }
+
+  #particles-canvas {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.5;
+  }
+
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent1);
+    border: 1px solid rgba(0,245,196,0.3);
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    letter-spacing: 0.12em;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent1);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .hero-name span { color: var(--accent1); }
+
+  .hero-role {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 440px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 32px; margin-bottom: 36px;
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent1);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  .hero-btns { display: flex; gap: 12px; }
+  .btn-primary {
+    background: var(--accent1);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,245,196,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent2);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 6px;
+    border: 1px solid var(--accent2);
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-outline:hover { background: rgba(124,106,255,0.1); transform: translateY(-2px); }
+
+  /* ── PROFILE CARD ── */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+  }
+
+  .profile-orbit {
+    position: relative;
+    width: 380px; height: 380px;
+  }
+
+  .profile-img-wrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--accent1);
+    box-shadow: 0 0 40px rgba(0,245,196,0.3), 0 0 80px rgba(0,245,196,0.1);
+    z-index: 3;
+  }
+  .profile-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top;
+  }
+
+  .orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(124,106,255,0.25);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin-slow linear infinite;
+  }
+  .orbit-ring:nth-child(2) { width: 260px; height: 260px; animation-duration: 14s; }
+  .orbit-ring:nth-child(3) { width: 330px; height: 330px; animation-duration: 22s; animation-direction: reverse; border-color: rgba(0,245,196,0.15); }
+
+  @keyframes spin-slow { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  .skill-pill {
+    position: absolute;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    white-space: nowrap;
+    animation: float 3s ease-in-out infinite;
+  }
+  .skill-pill:nth-child(4) { top: 5%; left: 5%; animation-delay: 0s; color: var(--accent1); border-color: rgba(0,245,196,0.3); }
+  .skill-pill:nth-child(5) { top: 5%; right: 5%; animation-delay: 0.5s; color: var(--accent2); border-color: rgba(124,106,255,0.3); }
+  .skill-pill:nth-child(6) { bottom: 5%; left: 5%; animation-delay: 1s; color: var(--accent3); border-color: rgba(255,107,53,0.3); }
+  .skill-pill:nth-child(7) { bottom: 5%; right: 5%; animation-delay: 1.5s; color: var(--accent4); border-color: rgba(255,209,102,0.3); }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 80px 80px; }
+
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent1);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  /* ── SESSION OVERVIEW ── */
+  #overview { background: var(--surface); }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .module-card {
+    background: var(--bg);
+    padding: 40px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .module-card:nth-child(1)::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,245,196,0.08) 0%, transparent 60%); }
+  .module-card:nth-child(2)::before { background: radial-gradient(ellipse at 100% 0%, rgba(124,106,255,0.08) 0%, transparent 60%); }
+  .module-card:nth-child(3)::before { background: radial-gradient(ellipse at 0% 100%, rgba(255,107,53,0.08) 0%, transparent 60%); }
+  .module-card:nth-child(4)::before { background: radial-gradient(ellipse at 100% 100%, rgba(255,209,102,0.08) 0%, transparent 60%); }
+
+  .module-card:hover::before { opacity: 1; }
+  .module-card:hover { border-color: var(--border); transform: scale(1.01); }
+
+  .module-step {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  .module-card:nth-child(1) .module-step { color: var(--accent1); }
+  .module-card:nth-child(2) .module-step { color: var(--accent2); }
+  .module-card:nth-child(3) .module-step { color: var(--accent3); }
+  .module-card:nth-child(4) .module-step { color: var(--accent4); }
+
+  .module-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+
+  .module-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .module-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .module-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .module-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 3px;
+    border: 1px solid;
+    letter-spacing: 0.06em;
+  }
+  .module-card:nth-child(1) .tag { border-color: rgba(0,245,196,0.3); color: var(--accent1); }
+  .module-card:nth-child(2) .tag { border-color: rgba(124,106,255,0.3); color: var(--accent2); }
+  .module-card:nth-child(3) .tag { border-color: rgba(255,107,53,0.3); color: var(--accent3); }
+  .module-card:nth-child(4) .tag { border-color: rgba(255,209,102,0.3); color: var(--accent4); }
+
+  .module-arrow {
+    position: absolute; bottom: 28px; right: 32px;
+    font-size: 1.2rem; opacity: 0;
+    transition: all 0.2s;
+    transform: translateX(-8px);
+  }
+  .module-card:hover .module-arrow { opacity: 1; transform: translateX(0); }
+
+  /* ── MODULE DETAIL SECTIONS ── */
+  #module1 { background: linear-gradient(180deg, #050810 0%, #06100d 100%); }
+  #module2 { background: linear-gradient(180deg, #050810 0%, #080614 100%); }
+  #module3 { background: linear-gradient(180deg, #050810 0%, #0a0705 100%); }
+  #module4 { background: linear-gradient(180deg, #050810 0%, #0a0a02 100%); }
+
+  .demo-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin: 32px 0; }
+  .demo-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent1); letter-spacing: 0.1em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .demo-title::before { content: '▶'; font-size: 0.6rem; color: var(--accent1); }
+  #iot-canvas, #kg-canvas, #ns-canvas, #fed-canvas, #swarm-canvas { width: 100%; border-radius: 8px; background: #030609; border: 1px solid var(--border); }
+  #iot-canvas { height: 340px; cursor: grab; }
+  #kg-canvas { height: 300px; }
+  #ns-canvas, #fed-canvas { height: 360px; }
+  #swarm-canvas { height: 380px; cursor: pointer; }
+
+  .demo-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+  .concept-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+  .concept-block h4 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+  .concept-block p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+
+  .explain-row { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: start; margin: 32px 0; }
+  .step-list { list-style: none; counter-reset: steps; }
+  .step-list li { counter-increment: steps; display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: var(--muted); }
+  .step-list li::before { content: counter(steps, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent1); min-width: 28px; padding-top: 1px; }
+
+  .sim-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .sim-btn { font-family: var(--font-mono); font-size: 0.72rem; padding: 8px 16px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; letter-spacing: 0.06em; transition: all 0.15s; }
+  .sim-btn:hover { border-color: var(--accent1); color: var(--accent1); }
+  .sim-btn.active { border-color: var(--accent1); color: var(--accent1); background: rgba(0,245,196,0.08); }
+  .sim-status { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); padding: 8px 14px; background: var(--surface); border-radius: 4px; border: 1px solid var(--border); min-width: 180px; }
+
+  .examples-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 32px 0; }
+  .example-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: border-color 0.2s; }
+  .example-card:hover { border-color: var(--accent2); }
+  .example-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .example-card h5 { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+  .example-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
+
+  .quiz-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; }
+  .quiz-q { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt { padding: 10px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; color: var(--text); font-family: var(--font-body); }
+  .quiz-opt:hover { border-color: var(--accent2); color: var(--accent2); }
+  .quiz-opt.correct { border-color: var(--accent1); color: var(--accent1); background: rgba(0,245,196,0.07); }
+  .quiz-opt.wrong { border-color: var(--accent3); color: var(--accent3); background: rgba(255,107,53,0.07); }
+
+  /* ── PROGRESS BAR & REVEAL ── */
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); z-index: 200; transition: width 0.1s; width: 0%; }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px 80px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-name { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--accent1); }
+  .footer-info { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); line-height: 1.8; text-align: right; }
+
+  /* ── NEW: CASE STUDY MODAL ── */
+  .cs-modal {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(5,8,16,0.9); backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .cs-modal.show {
+    opacity: 1; pointer-events: auto;
+  }
+  .cs-modal-content {
+    background: var(--surface); border: 1px solid var(--border);
+    width: 90%; max-width: 900px; max-height: 90vh;
+    border-radius: 12px; overflow-y: auto; padding: 40px;
+    position: relative; transform: translateY(20px); transition: transform 0.3s ease;
+  }
+  .cs-modal.show .cs-modal-content {
+    transform: translateY(0);
+  }
+  .cs-close {
+    position: absolute; top: 24px; right: 24px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem;
+    cursor: pointer; display: flex; justify-content: center; align-items: center;
+    transition: all 0.2s;
+  }
+  .cs-close:hover { border-color: var(--accent3); color: var(--accent3); }
+  
+  .cs-header-wrap {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);
+  }
+  .cs-header-title {
+    font-family: var(--font-display); font-size: 1.8rem; font-weight: 800;
+    color: var(--text); line-height: 1.2; margin-bottom: 8px;
+  }
+  .cs-header-sub { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent1); letter-spacing: 0.1em; }
+  
+  .cs-image-box {
+    width: 100%; min-height: 250px; background: var(--surface2);
+    border: 1px dashed var(--border); border-radius: 8px; margin-bottom: 32px;
+    display: flex; justify-content: center; align-items: center; overflow: hidden;
+  }
+  .cs-image-box img { width: 100%; height: auto; object-fit: cover; }
+  .cs-image-placeholder { font-family: var(--font-mono); color: var(--muted); font-size: 0.85rem; }
+
+  .cs-tabs {
+    display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .cs-tab-btn {
+    flex: 1; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-family: var(--font-mono); font-size: 0.75rem;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .cs-tab-btn:hover { background: rgba(255,255,255,0.02); }
+  .cs-tab-btn.active { background: rgba(255,255,255,0.05); color: var(--text); border-color: var(--tc); box-shadow: inset 0 3px 0 var(--tc); }
+  
+  .cs-tab-content { display: none; background: rgba(255,255,255,0.02); padding: 24px; border-radius: 8px; border: 1px solid var(--border); }
+  .cs-tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  .cs-section { margin-bottom: 20px; }
+  .cs-section h5 { color: var(--text); font-size: 0.95rem; margin-bottom: 8px; font-family: var(--font-mono);}
+  .cs-section p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+  .cs-section ul { list-style: none; padding-left: 10px; margin-top: 10px; }
+  .cs-section li { font-size: 0.85rem; color: var(--text); margin-bottom: 8px; position: relative; padding-left: 15px;}
+  .cs-section li::before { content: '>'; position: absolute; left: 0; color: var(--tc); font-family: var(--font-mono); font-size: 0.8rem;}
+
+  .cs-prompt {
+    background: #000; border: 1px dashed var(--tc); padding: 16px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.5; color: var(--tc);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; padding: 100px 32px 60px; text-align: center; }
+    .hero-right { display: none; }
+    .hero-stats { justify-content: center; }
+    .hero-btns { justify-content: center; flex-direction: column; }
+    section { padding: 60px 32px; }
+    .modules-grid { grid-template-columns: 1fr; }
+    .demo-2col { grid-template-columns: 1fr; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .explain-row { grid-template-columns: 1fr; }
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .footer-info { text-align: center; }
+    .cs-header-wrap { flex-direction: column; gap: 16px; }
+    .cs-tabs { flex-direction: column; }
+    .cs-modal-content { padding: 24px; width: 95%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<nav>
+  <a href="#hero" class="nav-brand">AS // AI×IoT</a>
+  <div class="nav-links">
+    <a href="#hero" class="active">HOME</a>
+    <a href="#overview">MODULES</a>
+    <a href="#module1">SEMANTIC IoT</a>
+    <a href="#module2">NEURO-SYM</a>
+    <a href="#module3">FEDERATED</a>
+    <a href="#module4">SWARM</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="hero-left reveal">
+    <div class="hero-tag">LIVE SESSION — 2-DAY AI×IoT SERIES</div>
+    <h1 class="hero-name">Arige<br/><span>Srikanth</span></h1>
+    <div class="hero-role">// AI AGENT DEVELOPER & TECHNICAL TRAINER</div>
+    <p class="hero-desc">
+      Founder of ASAMP JN · Innovation Expert at Hidden Gems Community · B.Tech AI&ML, JNTUH UCEM · Architecting intelligent systems where IoT meets AI.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">6+</span><span class="stat-label">AI/IoT SYSTEMS</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">MODULE SERIES</span></div>
+      <div class="stat"><span class="stat-num">2</span><span class="stat-label">DAY SESSION</span></div>
+    </div>
+    <div class="hero-btns">
+      <a href="#overview" class="btn-primary">EXPLORE MODULES →</a>
+      <a href="#module1" class="btn-outline">START LEARNING</a>
+      <button onclick="openCaseStudy()" class="btn-outline" style="border-color: var(--accent4); color: var(--accent4);">CASE STUDY 🎯</button>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="profile-orbit">
+      <div class="orbit-ring"></div>
+      <div class="orbit-ring"></div>
+      <div class="profile-img-wrap">
+        <img src="Image.jpeg" alt="Arige Srikanth Profile" style="width:110%; border-radius:8px; margin: 20px 20;">
+      </div>
+      <div class="skill-pill">🧠 LLM Systems</div>
+      <div class="skill-pill">⚡ IoT Edge</div>
+      <div class="skill-pill">🔐 Federated ML</div>
+      <div class="skill-pill">🐝 Swarm AI</div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="reveal">
+    <div class="section-eyebrow">SESSION ROADMAP</div>
+    <h2 class="section-title">Four Pillars of<br/>Next-Gen AI Systems</h2>
+    <p class="section-sub">A progressive 2-day deep dive — each module builds on the last, from physical world sensing to intelligent, private, and scalable AI at the edge.</p>
+  </div>
+  <div class="modules-grid reveal">
+    <a href="#module1" class="module-card">
+      <div class="module-step">STEP 01 — DAY 1 MORNING</div>
+      <span class="module-icon">🌐</span>
+      <div class="module-title">Semantic IoT</div>
+      <div class="module-subtitle">The Foundation — IoT + Knowledge Representation</div>
+      <p class="module-desc">How do physical sensors become "understanding" systems? Explore ontologies, semantic web technologies, and knowledge graphs layered on top of IoT data streams.</p>
+      <div class="module-tags">
+        <span class="tag">SPARQL</span>
+        <span class="tag">OWL Ontology</span>
+        <span class="tag">RDF Graphs</span>
+        <span class="tag">SSN/SOSA</span>
+      </div>
+      <div class="module-arrow">→</div>
+    </a>
+    <a href="#module2" class="module-card">
+      <div class="module-step">STEP 02 — DAY 1 AFTERNOON</div>
+      <span class="module-icon">🧠</span>
+      <div class="module-title">Neuro-Symbolic AI</div>
+      <div class="module-subtitle">The Reasoning — Neural Nets + Symbolic Logic</div>
+      <p class="module-desc">Bridge the gap between deep learning's pattern power and symbolic AI's explainability. Build systems that can both perceive AND reason logically.</p>
+      <div class="module-tags">
+        <span class="tag">Logic Rules</span>
+        <span class="tag">Neural Nets</span>
+        <span class="tag">Knowledge Graph</span>
+        <span class="tag">Hybrid Arch</span>
+      </div>
+      <div class="module-arrow">→</div>
+    </a>
+    <a href="#module3" class="module-card">
+      <div class="module-step">STEP 03 — DAY 2 MORNING</div>
+      <span class="module-icon">🔐</span>
+      <div class="module-title">Federated Learning</div>
+      <div class="module-subtitle">The Privacy Layer — Distributed ML Without Sharing Data</div>
+      <p class="module-desc">Train powerful ML models across thousands of devices without any raw data ever leaving the device. The future of privacy-preserving AI at scale.</p>
+      <div class="module-tags">
+        <span class="tag">FedAvg</span>
+        <span class="tag">Differential Privacy</span>
+        <span class="tag">Secure Aggregation</span>
+        <span class="tag">Edge ML</span>
+      </div>
+      <div class="module-arrow">→</div>
+    </a>
+    <a href="#module4" class="module-card">
+      <div class="module-step">STEP 04 — DAY 2 AFTERNOON</div>
+      <span class="module-icon">🐝</span>
+      <div class="module-title">Swarm &amp; Evolutionary</div>
+      <div class="module-subtitle">The Scalability — Nature-Inspired Computing</div>
+      <p class="module-desc">How ant colonies, bird flocks, and evolution inspire algorithms that solve problems no single computer can. Emergent intelligence from simple rules.</p>
+      <div class="module-tags">
+        <span class="tag">PSO</span>
+        <span class="tag">ACO</span>
+        <span class="tag">Genetic Algo</span>
+        <span class="tag">Emergent Behavior</span>
+      </div>
+      <div class="module-arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<section id="module1">
+  <div class="section-eyebrow reveal">MODULE 01 — FOUNDATION</div>
+  <h2 class="section-title reveal">Semantic IoT</h2>
+  <p class="section-sub reveal">Sensors produce raw data. Semantics make it <em>meaningful</em>. We layer knowledge representation onto IoT streams so machines can understand context — not just values.</p>
+
+  <div class="demo-area reveal">
+    <div class="demo-title">LIVE IoT NETWORK — Click nodes to inspect sensor data</div>
+    <canvas id="iot-canvas"></canvas>
+    <div class="sim-controls">
+      <button class="sim-btn active" onclick="iotSetMode('all')">All Sensors</button>
+      <button class="sim-btn" onclick="iotSetMode('temp')">🌡 Temperature</button>
+      <button class="sim-btn" onclick="iotSetMode('motion')">👁 Motion</button>
+      <button class="sim-btn" onclick="iotSetMode('energy')">⚡ Energy</button>
+      <div class="sim-status" id="iot-status">Click a node to see semantic data</div>
+    </div>
+  </div>
+
+  <div class="demo-2col reveal">
+    <div>
+      <div class="demo-area">
+        <div class="demo-title">KNOWLEDGE GRAPH — Semantic relationships</div>
+        <canvas id="kg-canvas"></canvas>
+      </div>
+    </div>
+    <div>
+      <div class="concept-block" style="margin-bottom:16px">
+        <h4 style="color:var(--accent1)">What is Semantic IoT?</h4>
+        <p>Traditional IoT: <code style="color:var(--accent3)">sensor_14: 27.3</code><br/><br/>
+        Semantic IoT: <code style="color:var(--accent1)">"TemperatureSensor in Room-A, Building-2, JNTUH Campus, reading 27.3°C, above comfort threshold, triggers CoolingSystem-03"</code></p>
+      </div>
+      <div class="concept-block">
+        <h4 style="color:var(--accent1)">The SSN Ontology</h4>
+        <p>W3C Semantic Sensor Network Ontology defines <strong>Sensor → Observation → Feature of Interest → Property</strong>. Any IoT deployment worldwide can be described using the same semantic vocabulary — enabling interoperability.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin-bottom:20px">How It Works — Step by Step</h3>
+    <div class="explain-row">
+      <ol class="step-list">
+        <li>Physical sensor captures raw numerical readings</li>
+        <li>Observation annotated with metadata (location, time, unit, sensor type)</li>
+        <li>RDF triples form subject-predicate-object relationships</li>
+        <li>OWL ontology defines class hierarchy and inference rules</li>
+        <li>SPARQL queries retrieve contextual insights</li>
+        <li>Reasoner infers new facts from known data</li>
+        <li>Applications consume rich, machine-readable knowledge</li>
+      </ol>
+      <div>
+        <div class="demo-area">
+          <div class="demo-title">SEMANTIC LAYER ARCHITECTURE</div>
+          <canvas id="semantic-arch-canvas" width="600" height="220" style="width:100%;height:220px;background:#030609;border:1px solid var(--border);border-radius:8px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">Real-World Applications</h3>
+    <div class="examples-grid">
+      <div class="example-card">
+        <div class="example-icon">🏥</div>
+        <h5>Smart Hospital</h5>
+        <p>Patient wearables + room sensors + medication systems linked semantically — system infers "Patient A's vitals + missed dose + adjacent nurse → trigger alert"</p>
+      </div>
+      <div class="example-card">
+        <div class="example-icon">🌾</div>
+        <h5>Precision Agriculture</h5>
+        <p>Soil sensors, weather APIs, crop ontologies combined. System reasons: "Nitrogen low + forecast rain in 2 days → delay fertilization"</p>
+      </div>
+      <div class="example-card">
+        <div class="example-icon">🏙️</div>
+        <h5>Smart City</h5>
+        <p>Traffic cameras, air quality sensors, public transport linked. Semantic layer enables real-time city-wide coordination across departments.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="quiz-block">
+      <div class="quiz-q">🧠 Quick Check: What does an RDF triple consist of?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz(this,'w')">Input → Process → Output</button>
+        <button class="quiz-opt" onclick="quiz(this,'c')">Subject → Predicate → Object</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">Sensor → Value → Timestamp</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">Class → Instance → Property</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="module2">
+  <div class="section-eyebrow reveal" style="color:var(--accent2)">MODULE 02 — REASONING</div>
+  <h2 class="section-title reveal">Neuro-Symbolic AI</h2>
+  <p class="section-sub reveal">Neural networks are powerful but black boxes. Symbolic AI is explainable but brittle. Neuro-Symbolic AI combines both — the perception of deep learning with the reasoning of logic.</p>
+
+  <div class="demo-area reveal">
+    <div class="demo-title" style="color:var(--accent2)">NEURO-SYMBOLIC REASONING ENGINE — Watch neural perception feed into symbolic logic</div>
+    <canvas id="ns-canvas"></canvas>
+    <div class="sim-controls">
+      <button class="sim-btn" onclick="nsInput('image')" style="border-color:rgba(124,106,255,0.3);color:var(--accent2)">🖼️ Image Input</button>
+      <button class="sim-btn" onclick="nsInput('text')" style="border-color:rgba(124,106,255,0.3);color:var(--accent2)">📝 Text Input</button>
+      <button class="sim-btn" onclick="nsInput('sensor')" style="border-color:rgba(124,106,255,0.3);color:var(--accent2)">📡 Sensor Input</button>
+      <div class="sim-status" id="ns-status">Select an input type to simulate reasoning</div>
+    </div>
+  </div>
+
+  <div class="demo-2col reveal">
+    <div class="concept-block">
+      <h4 style="color:var(--accent2)">Pure Neural ❌</h4>
+      <p><strong>Good at:</strong> Pattern recognition, images, speech<br/><strong>Bad at:</strong> Explaining why, logical consistency, working with rules<br/><br/>A neural net can identify a stop sign but cannot explain the traffic law behind stopping.</p>
+    </div>
+    <div class="concept-block">
+      <h4 style="color:var(--accent2)">Pure Symbolic ❌</h4>
+      <p><strong>Good at:</strong> Rules, logic, explainability<br/><strong>Bad at:</strong> Perception, handling noisy real-world data<br/><br/>A symbolic system can reason perfectly about stop signs but cannot recognize one in a photo.</p>
+    </div>
+  </div>
+
+  <div class="demo-area reveal">
+    <div class="demo-title" style="color:var(--accent2)">HYBRID ARCHITECTURE COMPARISON</div>
+    <canvas id="ns-compare-canvas" style="width:100%;height:260px;background:#030609;border:1px solid var(--border);border-radius:8px;"></canvas>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">Real Applications</h3>
+    <div class="examples-grid">
+      <div class="example-card" style="border-color:rgba(124,106,255,0.2)">
+        <div class="example-icon">🚗</div>
+        <h5>Autonomous Driving</h5>
+        <p>Neural: detect objects. Symbolic: apply traffic rules. Together: "Object detected is pedestrian + crossing rule + speed limit → brake now"</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(124,106,255,0.2)">
+        <div class="example-icon">💊</div>
+        <h5>Medical Diagnosis</h5>
+        <p>Neural: analyze X-ray patterns. Symbolic: apply clinical guidelines. Together: explainable, auditable diagnoses doctors can trust and verify.</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(124,106,255,0.2)">
+        <div class="example-icon">🤖</div>
+        <h5>Robot Planning</h5>
+        <p>Neural: perceive environment. Symbolic: plan action sequences. Robot can both see where it is AND reason about the best path forward.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="quiz-block" style="border-color:rgba(124,106,255,0.3)">
+      <div class="quiz-q">🧠 Quick Check: What is the key advantage of Neuro-Symbolic AI over pure neural networks?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz(this,'w')">It trains faster with less data</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">It produces better image recognition</button>
+        <button class="quiz-opt" onclick="quiz(this,'c')">It provides explainable, logical reasoning alongside perception</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">It requires no training at all</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="module3">
+  <div class="section-eyebrow reveal" style="color:var(--accent3)">MODULE 03 — PRIVACY & SECURITY</div>
+  <h2 class="section-title reveal">Federated Learning</h2>
+  <p class="section-sub reveal">What if AI could learn from millions of devices without ever seeing their private data? Federated Learning brings the model to the data — not the other way around.</p>
+
+  <div class="demo-area reveal" style="border-color:rgba(255,107,53,0.2)">
+    <div class="demo-title" style="color:var(--accent3)">FEDERATED TRAINING SIMULATION — Watch distributed devices train without sharing data</div>
+    <canvas id="fed-canvas"></canvas>
+    <div class="sim-controls">
+      <button class="sim-btn" id="fed-start-btn" onclick="fedStart()" style="border-color:rgba(255,107,53,0.4);color:var(--accent3)">▶ START ROUND</button>
+      <button class="sim-btn" onclick="fedReset()" style="border-color:rgba(255,107,53,0.4);color:var(--accent3)">↺ RESET</button>
+      <div class="sim-status" id="fed-status">Press START ROUND to begin federated training</div>
+    </div>
+  </div>
+
+  <div class="demo-2col reveal">
+    <div class="concept-block" style="border-color:rgba(255,107,53,0.2)">
+      <h4 style="color:var(--accent3)">Traditional ML (Centralized) ❌</h4>
+      <p>All raw data sent to central server → train model → deploy back<br/><br/><strong>Problem:</strong> Privacy violation, data breaches, regulation issues (GDPR), massive bandwidth requirements, single point of failure.</p>
+    </div>
+    <div class="concept-block" style="border-color:rgba(255,107,53,0.2)">
+      <h4 style="color:var(--accent3)">Federated Learning ✓</h4>
+      <p>Model sent to each device → train locally → send only model updates (gradients) back → aggregate → improved global model<br/><br/><strong>Result:</strong> Data never leaves the device. Privacy preserved by design.</p>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">The FedAvg Algorithm — Visualized</h3>
+    <canvas id="fedavg-canvas" style="width:100%;height:200px;background:#030609;border:1px solid var(--border);border-radius:8px;"></canvas>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">Real-World Deployments</h3>
+    <div class="examples-grid">
+      <div class="example-card" style="border-color:rgba(255,107,53,0.2)">
+        <div class="example-icon">📱</div>
+        <h5>Google Gboard</h5>
+        <p>Next-word prediction on your phone improves through federated learning. Your typed words never leave your device — yet the model gets smarter for everyone.</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(255,107,53,0.2)">
+        <div class="example-icon">🏦</div>
+        <h5>Banking Fraud Detection</h5>
+        <p>Multiple banks collaborate to detect fraud patterns without sharing customer transaction data with competitors or regulators.</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(255,107,53,0.2)">
+        <div class="example-icon">🏥</div>
+        <h5>Medical Imaging AI</h5>
+        <p>Hospitals in different countries train diagnostic AI models together without sharing patient scans — meeting HIPAA/GDPR while advancing medicine.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="quiz-block" style="border-color:rgba(255,107,53,0.3)">
+      <div class="quiz-q">🧠 Quick Check: In Federated Learning, what is sent to the central server?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz(this,'w')">Raw training data from each device</button>
+        <button class="quiz-opt" onclick="quiz(this,'c')">Model weight updates (gradients) only</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">Compressed copies of the local dataset</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">User ID and device fingerprints</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="module4">
+  <div class="section-eyebrow reveal" style="color:var(--accent4)">MODULE 04 — SCALABILITY</div>
+  <h2 class="section-title reveal">Swarm &amp; Evolutionary Algorithms</h2>
+  <p class="section-sub reveal">Nature solved optimization problems over millions of years. Swarm Intelligence and Evolutionary Computing borrow these solutions — from ant pheromones to genetic mutation — to solve problems at massive scale.</p>
+
+  <div class="demo-area reveal" style="border-color:rgba(255,209,102,0.2)">
+    <div class="demo-title" style="color:var(--accent4)">LIVE SWARM SIMULATION — Click canvas to add food source, watch agents find optimal paths</div>
+    <canvas id="swarm-canvas"></canvas>
+    <div class="sim-controls">
+      <button class="sim-btn active" id="swarm-mode-btn" onclick="swarmToggle()" style="border-color:rgba(255,209,102,0.4);color:var(--accent4)">🐝 PSO MODE</button>
+      <button class="sim-btn" onclick="swarmReset()" style="border-color:rgba(255,209,102,0.4);color:var(--accent4)">↺ RESET</button>
+      <button class="sim-btn" onclick="swarmAddFood()" style="border-color:rgba(255,209,102,0.4);color:var(--accent4)">+ ADD TARGET</button>
+      <div class="sim-status" id="swarm-status">Swarm optimizing... Click canvas to interact</div>
+    </div>
+  </div>
+
+  <div class="demo-2col reveal">
+    <div class="concept-block" style="border-color:rgba(255,209,102,0.2)">
+      <h4 style="color:var(--accent4)">Particle Swarm Optimization (PSO)</h4>
+      <p>Inspired by bird flocking. Each "particle" explores a solution space remembering its best position and the swarm's best position. Simple rules → global optimization.<br/><br/>Used in: neural network training, antenna design, financial modeling.</p>
+    </div>
+    <div class="concept-block" style="border-color:rgba(255,209,102,0.2)">
+      <h4 style="color:var(--accent4)">Ant Colony Optimization (ACO)</h4>
+      <p>Ants deposit pheromones on good paths. Paths with more pheromone attract more ants. Shortest path emerges from collective behavior — no central control needed.<br/><br/>Used in: routing networks, supply chain, VLSI design.</p>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">Genetic Algorithms — Evolution in Code</h3>
+    <canvas id="ga-canvas" style="width:100%;height:220px;background:#030609;border:1px solid var(--border);border-radius:8px;"></canvas>
+    <div class="sim-controls" style="margin-top:12px">
+      <button class="sim-btn" onclick="gaStep()" style="border-color:rgba(255,209,102,0.4);color:var(--accent4)">⟳ NEXT GENERATION</button>
+      <div class="sim-status" id="ga-status">Generation 0 — Click to evolve</div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin:32px 0 16px">Where Nature-Inspired Computing Wins</h3>
+    <div class="examples-grid">
+      <div class="example-card" style="border-color:rgba(255,209,102,0.2)">
+        <div class="example-icon">🚚</div>
+        <h5>Logistics Routing</h5>
+        <p>ACO finds near-optimal delivery routes across thousands of locations — the classic Travelling Salesman Problem — in real-time for companies like UPS and FedEx.</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(255,209,102,0.2)">
+        <div class="example-icon">🛰️</div>
+        <h5>Drone Swarms</h5>
+        <p>Hundreds of autonomous drones coordinate using PSO-inspired rules — no central controller. Used in military, disaster response, and aerial light shows.</p>
+      </div>
+      <div class="example-card" style="border-color:rgba(255,209,102,0.2)">
+        <div class="example-icon">🔬</div>
+        <h5>Drug Discovery</h5>
+        <p>Genetic Algorithms evolve molecular structures to optimize binding affinity to target proteins — discovering drug candidates 100x faster than brute force methods.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="quiz-block" style="border-color:rgba(255,209,102,0.3)">
+      <div class="quiz-q">🧠 Quick Check: What natural phenomenon inspired Ant Colony Optimization?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz(this,'w')">Ants building nests by dividing labor</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">Ant queens communicating instructions</button>
+        <button class="quiz-opt" onclick="quiz(this,'c')">Ants leaving pheromone trails that reinforce shorter paths</button>
+        <button class="quiz-opt" onclick="quiz(this,'w')">Ant armies surrounding prey in formation</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-name">ARIGE SRIKANTH</div>
+    <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);margin-top:4px">AI-IoT Architecture · Praxis-Led Mentorship</div>
+  </div>
+  <div class="footer-info">
+    <div>Innovation Expert · Hidden Gems Community</div>
+    <div>Founder · ASAMP JN</div>
+    <div>B.Tech AI&ML · JNTUH UCEM · 2022–2026</div>
+    <div style="color:var(--accent1);margin-top:4px">srikantharige69@gmail.com · 9494608408</div>
+  </div>
+</footer>
+
+<div id="csModal" class="cs-modal">
+  <div class="cs-modal-content">
+    <button class="cs-close" onclick="closeCaseStudy()">✕</button>
+    
+    <div class="cs-header-wrap">
+      <div>
+        <div class="cs-header-sub">LIVE WORKSHOP SIMULATION</div>
+        <h2 class="cs-header-title">Enterprise Edge Pipeline</h2>
+        <p style="color: var(--muted); font-size: 0.85rem; max-width: 500px;">
+          All Teams. One integrated architecture. A catastrophic failure has occurred. Complete your sector's task to ensure the data packet survives the pipeline.
+        </p>
+      </div>
+      <a href="instructions.pdf" target="_blank" class="btn-primary" style="padding: 14px 28px; white-space: nowrap;">📄 DOWNLOAD INSTRUCTIONS</a>
+    </div>
+
+    <div class="cs-image-box">
+      <img src="CaseStudy.png" alt="Add your Case Study architecture image here" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="cs-image-placeholder" style="display: none;">[ PLACEHOLDER: ADD YOUR 3D INFOGRAPHIC IMAGE HERE ]</div>
+    </div>
+
+    <div class="cs-tabs">
+      <button class="cs-tab-btn active" onclick="switchCsTab(1)" id="csbtn-1" style="--tc: var(--accent1)">SECTOR 1: SEMANTIC IoT</button>
+      <button class="cs-tab-btn" onclick="switchCsTab(2)" id="csbtn-2" style="--tc: var(--accent2)">SECTOR 2: NEURO-SYM</button>
+      <button class="cs-tab-btn" onclick="switchCsTab(3)" id="csbtn-3" style="--tc: var(--accent4)">SECTOR 3: SWARM</button>
+      <button class="cs-tab-btn" onclick="switchCsTab(4)" id="csbtn-4" style="--tc: var(--accent3)">SECTOR 4: FEDERATED</button>
+    </div>
+
+    <!-- =========================
+SECTOR 1
+========================= -->
+
+<div id="cstab-1" class="cs-tab-content active" style="--tc: var(--accent1)">
+
+  <div class="cs-section">
+    <h5>The Situation (2:00 AM Crisis)</h5>
+    <p>
+      Pipe #42 has broken. Your factory's AI camera is looking at the white gas and wrongly saying:
+      <code>Status: Normal Steam</code>.
+      At the same time, your chemical sensor reads <code>800</code>.
+      A few seconds later, the chemical sensor battery dies due to freezing gas and starts sending a
+      <code>NULL</code> error message.
+    </p>
+  </div>
+
+  <div class="cs-section">
+    <h5>Your Engine to Build (On A4 Paper)</h5>
+    <ul>
+      <li>Semantic Data Flowchart</li>
+      <li>Standardized JSON Payload Structure</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <h5>Group Discussion Question</h5>
+    <p>
+      "If you pass the raw number<code> '800'</code> to the next team, they won't know what it means—is it safe pressure, normal heat, or a toxic leak? Discuss and design a semantic logic rule that gives this number exact physical context and a hazard tag. You must also ignore the wrong camera and safely handle the NULL battery error. Write down the final, clear 'Data Payload' you will hand over as fuel to Sector 2."
+    </p>
+
+<ul>
+  <li>Tags the number as a lethal hazard.</li>
+  <li>Ignores the incorrect camera classification.</li>
+  <li>Safely handles the NULL battery failure.</li>
+  <li>Produces the final Hazard Payload for Sector 2.</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
+
+<div class="cs-prompt">
+
+"Act as a Senior Semantic Web Architect.
+
+I will provide my JSON-LD(a lightweight, machine-readable data format)schema that translates a raw '800' reading and a 'NULL' battery error into a hazard payload, ignoring a hallucinating AI camera.
+
+Point out the single biggest vulnerability in my logic regarding data formatting or missing context.
+
+Provide a mathematical or structural improvement to handle the NULL error safely.
+
+Generate a clear text-based workflow diagram (ASCII or Mermaid) showing this data fusion process.
+
+Finally, based on my logic, output the final, clean 'Hazard Payload' (in JSON format) exactly as I need to hand it over to Sector 2." </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+SECTOR 2
+========================= -->
+
+<div id="cstab-2" class="cs-tab-content" style="--tc: var(--accent2)">
+
+  <div class="cs-section">
+    <h5>The Situation (2:00 AM Crisis)</h5>
+    <p>
+      Sector 1's data takes half a second to reach you.
+      During that time, your factory's Deep Learning AI is hallucinating.
+      It is <strong>94% confident</strong> that the white gas is only steam and is voting to:
+      <code>Keep Factory Running</code>.
+    </p>
+  </div>
+
+  <div class="cs-section">
+    <h5>Your Engine to Build (On A4 Paper)</h5>
+    <ul>
+      <li>Deterministic Logic Tree</li>
+      <li>Truth Table Override System</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <h5>Group Discussion Question</h5>
+
+<p>
+ "You cannot rely on an AI's guesswork during a disaster. You are about to receive the data payload from Sector 1. Discuss and draw the exact mathematical rule your logic gate uses to completely override the AI's 94% confidence. If the camera gets completely blinded by black smoke and outputs nothing, what must your system's default safety action be? Discuss this, apply your rule, and generate a final binary output of 1 (Evacuate) or 0 (Hold) to hand over as fuel to Sector 3."
+</p>
+
+<ul>
+  <li>Should smoke blindness trigger Safe-Stop or Safe-Run?</li>
+  <li>How will symbolic logic override the neural network?</li>
+  <li>Produce Binary Output: 1 (Evacuate) or 0 (Hold).</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
+
+<div class="cs-prompt">
+
+"Act as a Functional Safety Engineer.
+
+I will provide my symbolic logic tree that is designed to take Sector 1's hazard payload and completely override a 94% confident Neural Network.
+
+Point out any race conditions or logical flaws in my fallback rule, especially if the camera gets blinded by smoke.
+
+Provide a mathematical improvement for my threshold settings (e.g., how to calculate false-positive vs. false-negative risks).
+
+Generate a clear text-based decision-tree diagram (ASCII or Mermaid) of my logic gate.
+
+Finally, based on my logic, output the final, strict Binary Flag (1 for Evacuate, or 0 for Hold) exactly as I need to hand it over to Sector 3." </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+SECTOR 3
+========================= -->
+
+<div id="cstab-3" class="cs-tab-content" style="--tc: var(--accent4)">
+
+  <div class="cs-section">
+    <h5>The Situation (2:00 AM Crisis)</h5>
+
+<p>
+  Sector 2 successfully triggered evacuation.
+  The main power breaker shut down the factory and the 5G tower died.
+  The village 2 km away must be warned.
+  There is no internet.
+  Only Bluetooth connections between 40 mobile phones remain.
+</p>
+
+<p>
+  30% of phones have dead batteries.
+  One hacked Smart TV is broadcasting:
+  <code>ALL CLEAR - STAY INSIDE</code>.
+</p>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>Your Engine to Build (On A4 Paper)</h5>
+
+
+<ul>
+  <li>Nature-Inspired Mesh Routing Map</li>
+  <li>Decentralized P2P Communication Protocol</li>
+</ul>
+
+
+  </div>
+
+  <div class="cs-section">
+    <h5>Group Discussion Question</h5>
+    <p>"You just received the binary alert command from Sector 2. If every phone broadcasts this alert to every other phone simultaneously, the local network will instantly crash. Discuss and design a specific nature-inspired rule that restricts how phones select their neighbors to pass the message to. How does the swarm bypass dead zones and reach consensus to ignore the hacked TV? Map the route and generate a 'Routing Log Vector' to hand over as fuel to Sector 4."
+    </p>
+
+<ul>
+  <li>Prevent Bluetooth broadcast storms.</li>
+  <li>Choose only 2–3 neighbors for message forwarding.</li>
+  <li>Bypass dead phones.</li>
+  <li>Ignore the hacked Smart TV.</li>
+  <li>Generate a Routing Log Vector for Sector 4.</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
+
+<div class="cs-prompt">
+
+"Act as a Swarm Intelligence Researcher.
+
+I will provide my nature-inspired routing protocol designed to spread Sector 2's evacuation flag across 40 offline mobile phones (where 30% have dead batteries and 1 is a hacked node broadcasting false safety).
+
+Calculate the mathematical probability of an unrecoverable network split and suggest an improvement to my consensus rule to ignore the hacked node.
+
+Generate a clear text-based mesh routing diagram (ASCII or Mermaid) showing how the packet hops between nodes.
+
+Finally, based on my routing rules, output a simulated, clean 'Routing Log Vector' (showing the path data) exactly as I need to hand it over to Sector 4 for their machine learning model." </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+SECTOR 4
+========================= -->
+
+<div id="cstab-4" class="cs-tab-content" style="--tc: var(--accent3)">
+
+  <div class="cs-section">
+    <h5>The Situation (72 Hours Later)</h5>
+
+<p>
+  The village evacuation succeeded.
+  Internet service has been restored.
+  Routing logs from Sector 3 are available for training a better disaster-response AI.
+</p>
+
+<p>
+  However, those logs contain:
+</p>
+
+<ul>
+  <li>Villager bedroom GPS coordinates</li>
+  <li>Private MAC addresses</li>
+  <li>Personally identifiable routing data</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>Your Engine to Build (On A4 Paper)</h5>
+
+<ul>
+  <li>Federated Aggregation Pipeline</li>
+  <li>Local SGD Training Architecture</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>Group Discussion Question</h5>
+    <p>
+      "You have received the routing logs from Sector 3, but you cannot upload them to the cloud due to strict privacy laws. Discuss and draw the exact mathematical step that happens directly on the phones to extract intelligence without sharing the raw data. How does the cloud securely combine these individual updates without ever exposing a villager's location? Finally, draw how this new global intelligence is pushed backward down the pipeline to make Sector 1's sensors smarter for the future."
+    </p>
+<ul>
+  <li>Train directly on phones using Local SGD.</li>
+  <li>Extract only weight updates (Δw).</li>
+  <li>Prevent private location leakage.</li>
+  <li>Aggregate securely in the cloud.</li>
+  <li>Push improved intelligence back to Sector 1 sensors.</li>
+</ul>
+
+  </div>
+
+  <div class="cs-section">
+    <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
+
+<div class="cs-prompt">
+
+"Act as a Cryptographic Machine Learning Specialist.
+
+I will provide my Federated Aggregation pipeline that processes the routing logs from Sector 3 using Local SGD.
+
+Explain how a hacker could execute a Model Inversion Attack to track a villager's location from my data, and provide the exact mathematical formula for Differential Privacy noise injection to prevent this.
+
+Generate a clear text-based architecture diagram (ASCII or Mermaid) showing the local-to-cloud aggregation flow.
+
+Finally, output the final compiled Weight Update (Δw) format exactly as it needs to be pushed backward down the pipeline to make Sector 1's physical sensors smarter." </div>
+
+  </div>
+
+</div>
+
+
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+//  PARTICLES
+// ──────────────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let pts = [], W, H;
+  function resize(){
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  for(let i=0;i<60;i++) pts.push({
+    x: Math.random()*W, y: Math.random()*H,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    r: Math.random()*1.5+0.5
+  });
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,245,196,0.35)';
+      ctx.fill();
+    });
+    pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{
+      let d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(124,106,255,${0.12*(1-d/120)})`;
+        ctx.lineWidth=0.5;
+        ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+    }));
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+// ──────────────────────────────────────────────
+//  PROGRESS BAR
+// ──────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  const p=document.getElementById('progress');
+  const pct = window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  p.style.width=pct+'%';
+});
+
+// ──────────────────────────────────────────────
+//  NAV ACTIVE
+// ──────────────────────────────────────────────
+const sections=['hero','overview','module1','module2','module3','module4'];
+window.addEventListener('scroll',()=>{
+  const links=document.querySelectorAll('.nav-links a');
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const rect=el.getBoundingClientRect();
+    if(rect.top<=80&&rect.bottom>80){
+      links.forEach(l=>l.classList.remove('active'));
+      const l=document.querySelector(`.nav-links a[href="#${id}"]`);
+      if(l) l.classList.add('active');
+    }
+  });
+});
+
+// ──────────────────────────────────────────────
+//  REVEAL ON SCROLL
+// ──────────────────────────────────────────────
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// ──────────────────────────────────────────────
+//  QUIZ
+// ──────────────────────────────────────────────
+function quiz(btn, type){
+  const opts=btn.closest('.quiz-opts').querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{ o.onclick=null; });
+  btn.classList.add(type==='c'?'correct':'wrong');
+}
+
+// ──────────────────────────────────────────────
+//  NEW: CASE STUDY MODAL LOGIC
+// ──────────────────────────────────────────────
+function openCaseStudy() {
+  document.getElementById('csModal').classList.add('show');
+  document.body.classList.add('modal-open');
+}
+
+function closeCaseStudy() {
+  document.getElementById('csModal').classList.remove('show');
+  document.body.classList.remove('modal-open');
+}
+
+function switchCsTab(tabId) {
+  // Hide all contents and remove active from buttons
+  for(let i=1; i<=4; i++) {
+    document.getElementById('cstab-'+i).classList.remove('active');
+    document.getElementById('csbtn-'+i).classList.remove('active');
+  }
+  // Show selected
+  document.getElementById('cstab-'+tabId).classList.add('active');
+  document.getElementById('csbtn-'+tabId).classList.add('active');
+}
+
+// Close modal if clicked outside of content
+document.getElementById('csModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeCaseStudy();
+  }
+});
+
+
+// ──────────────────────────────────────────────
+//  MODULE 1 — IoT CANVAS
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('iot-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,nodes=[],mode='all',frame_id;
+
+  const sensorTypes=[
+    {type:'temp',icon:'🌡',color:'#00f5c4',label:'Temperature',unit:'°C'},
+    {type:'motion',icon:'👁',color:'#7c6aff',label:'Motion',unit:''},
+    {type:'energy',icon:'⚡',color:'#ffd166',label:'Energy',unit:'kW'},
+    {type:'air',icon:'💨',color:'#ff6b35',label:'Air Quality',unit:'AQI'},
+    {type:'humid',icon:'💧',color:'#56cfe1',label:'Humidity',unit:'%'},
+  ];
+
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=340;
+    buildNodes();
+  }
+
+  function buildNodes(){
+    nodes=[];
+    nodes.push({x:W/2,y:H/2,role:'gateway',label:'Gateway',color:'#e8edf5',vx:0,vy:0,pulse:0});
+    for(let i=0;i<12;i++){
+      const st=sensorTypes[i%sensorTypes.length];
+      const angle=(i/12)*Math.PI*2;
+      const r=Math.min(W,H)*0.35+Math.random()*20-10;
+      nodes.push({
+        x:W/2+Math.cos(angle)*r,
+        y:H/2+Math.sin(angle)*r,
+        role:'sensor',
+        type:st.type,
+        label:st.label+'-'+(i+1),
+        color:st.color,
+        icon:st.icon,
+        unit:st.unit,
+        value:Math.random()*100,
+        vx:(Math.random()-0.5)*0.3,
+        vy:(Math.random()-0.5)*0.3,
+        pulse:Math.random()*Math.PI*2,
+        active:false
+      });
+    }
+  }
+
+  function getStatus(n){
+    if(!n) return '';
+    const v=Math.round(n.value*10)/10;
+    let extra='';
+    if(n.type==='temp') extra=v>30?'⚠ High':'✓ Normal';
+    if(n.type==='motion') extra=v>50?'🔴 Detected':'🟢 Clear';
+    if(n.type==='energy') extra=v>70?'⚠ Peak':'✓ Normal';
+    if(n.type==='air') extra=v>60?'⚠ Poor':'✓ Good';
+    if(n.type==='humid') extra=v>75?'⚠ High':'✓ Normal';
+    return `${n.label}: ${v}${n.unit} — ${extra}`;
+  }
+
+  window.iotSetMode=function(m){
+    mode=m;
+    document.querySelectorAll('#module1 .sim-btn').forEach(b=>b.classList.remove('active'));
+    event.target.classList.add('active');
+  };
+
+  canvas.addEventListener('click',function(e){
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+    nodes.forEach(n=>{
+      if(Math.hypot(n.x-mx,n.y-my)<20 && n.role==='sensor'){
+        n.active=!n.active;
+        document.getElementById('iot-status').textContent=getStatus(n);
+      }
+    });
+  });
+
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    t+=0.012;
+
+    nodes.forEach(n=>{
+      if(n.role!=='sensor') return;
+      if(mode!=='all' && n.type!==mode) return;
+      const prog=(t*0.7+n.pulse)%1;
+      const px=n.x+(nodes[0].x-n.x)*prog;
+      const py=n.y+(nodes[0].y-n.y)*prog;
+      ctx.beginPath();
+      ctx.arc(px,py,3,0,Math.PI*2);
+      ctx.fillStyle=n.color+'99';
+      ctx.fill();
+    });
+
+    nodes.forEach(n=>{
+      if(n.role!=='sensor') return;
+      if(mode!=='all' && n.type!==mode) return;
+      ctx.beginPath();
+      ctx.strokeStyle=n.color+'30';
+      ctx.lineWidth=1;
+      ctx.setLineDash([4,6]);
+      ctx.moveTo(n.x,n.y); ctx.lineTo(nodes[0].x,nodes[0].y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    const g=nodes[0];
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(g.x,g.y,28,0,Math.PI*2);
+    ctx.strokeStyle='rgba(232,237,245,0.2)';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(g.x,g.y,18,0,Math.PI*2);
+    ctx.fillStyle='#1e2d45';
+    ctx.fill();
+    ctx.strokeStyle='#e8edf5';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    ctx.fillStyle='#e8edf5';
+    ctx.font='11px Space Mono, monospace';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('GW',g.x,g.y);
+    ctx.font='9px Space Grotesk, sans-serif';
+    ctx.fillStyle='rgba(232,237,245,0.5)';
+    ctx.fillText('Gateway',g.x,g.y+30);
+    ctx.restore();
+
+    nodes.forEach(n=>{
+      if(n.role!=='sensor') return;
+      if(mode!=='all' && n.type!==mode) { return; }
+      n.pulse+=0.02;
+      ctx.save();
+      if(n.active){
+        ctx.shadowColor=n.color;
+        ctx.shadowBlur=16;
+      }
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,14,0,Math.PI*2);
+      ctx.fillStyle=n.active?n.color+'40':'#111827';
+      ctx.fill();
+      ctx.strokeStyle=n.active?n.color:n.color+'60';
+      ctx.lineWidth=n.active?2:1;
+      ctx.stroke();
+      ctx.font='13px serif';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(n.icon,n.x,n.y);
+      ctx.font='8px Space Mono, monospace';
+      ctx.fillStyle=n.color+'aa';
+      ctx.fillText(Math.round(n.value)+n.unit,n.x,n.y+22);
+      ctx.restore();
+    });
+
+    frame_id=requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize',resize);
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 1 — KNOWLEDGE GRAPH
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('kg-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H;
+
+  const nodes=[
+    {id:'room',label:'Room-A',color:'#00f5c4',x:0.5,y:0.5,r:18},
+    {id:'temp',label:'TempSensor-01',color:'#00f5c4',x:0.2,y:0.25,r:13},
+    {id:'motion',label:'MotionSensor-02',color:'#7c6aff',x:0.8,y:0.25,r:13},
+    {id:'energy',label:'EnergyMeter',color:'#ffd166',x:0.15,y:0.7,r:13},
+    {id:'obs1',label:'Obs:27.3°C',color:'#ff6b35',x:0.35,y:0.1,r:10},
+    {id:'obs2',label:'Obs:Motion',color:'#ff6b35',x:0.65,y:0.1,r:10},
+    {id:'building',label:'Building-2',color:'#56cfe1',x:0.5,y:0.85,r:14},
+    {id:'alert',label:'⚠ Alert',color:'#ff6b35',x:0.85,y:0.7,r:12},
+  ];
+  const edges=[
+    {from:'room',to:'temp',label:'hasSensor',color:'#00f5c4'},
+    {from:'room',to:'motion',label:'hasSensor',color:'#7c6aff'},
+    {from:'room',to:'energy',label:'uses',color:'#ffd166'},
+    {from:'temp',to:'obs1',label:'observes',color:'#00f5c4'},
+    {from:'motion',to:'obs2',label:'observes',color:'#7c6aff'},
+    {from:'building',to:'room',label:'contains',color:'#56cfe1'},
+    {from:'obs1',to:'alert',label:'triggers',color:'#ff6b35'},
+  ];
+
+  let anim=0;
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=300;
+  }
+  resize(); window.addEventListener('resize',resize);
+
+  function getPos(n){return{x:n.x*W,y:n.y*H};}
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.015;
+    edges.forEach(e=>{
+      const a=nodes.find(n=>n.id===e.from), b=nodes.find(n=>n.id===e.to);
+      if(!a||!b) return;
+      const pa=getPos(a), pb=getPos(b);
+      ctx.beginPath();
+      ctx.strokeStyle=e.color+'50';
+      ctx.lineWidth=1;
+      ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+      const t=(anim*0.5)%1;
+      const dx=pb.x-pa.x, dy=pb.y-pa.y;
+      ctx.beginPath();
+      ctx.arc(pa.x+dx*t,pa.y+dy*t,3,0,Math.PI*2);
+      ctx.fillStyle=e.color+'cc';
+      ctx.fill();
+      ctx.font='8px Space Mono, monospace';
+      ctx.fillStyle=e.color+'80';
+      ctx.textAlign='center';
+      ctx.fillText(e.label,(pa.x+pb.x)/2,(pa.y+pb.y)/2-5);
+    });
+    nodes.forEach(n=>{
+      const p=getPos(n);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,n.r,0,Math.PI*2);
+      ctx.fillStyle='#111827';
+      ctx.fill();
+      ctx.strokeStyle=n.color;
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      ctx.font=`${Math.max(8,n.r*0.7)}px Space Grotesk, sans-serif`;
+      ctx.fillStyle=n.color;
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(n.label,p.x,p.y+n.r+9);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 1 — SEMANTIC ARCH
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('semantic-arch-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const layers=[
+    {label:'APPLICATION LAYER',sub:'Smart Apps, Dashboards, Agents',color:'#00f5c4'},
+    {label:'SEMANTIC LAYER',sub:'OWL Ontology, SPARQL, Reasoner',color:'#7c6aff'},
+    {label:'KNOWLEDGE LAYER',sub:'RDF Triples, Knowledge Graph',color:'#ffd166'},
+    {label:'IoT LAYER',sub:'Sensors, Actuators, Gateways',color:'#ff6b35'},
+  ];
+  let W,H,anim=0;
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=220; }
+  resize(); window.addEventListener('resize',resize);
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.01;
+    const lh=(H-20)/layers.length;
+    layers.forEach((l,i)=>{
+      const y=10+i*lh;
+      const grad=ctx.createLinearGradient(0,y,W,y+lh-4);
+      grad.addColorStop(0,l.color+'18');
+      grad.addColorStop(1,'transparent');
+      ctx.fillStyle=grad;
+      ctx.beginPath();
+      ctx.roundRect(10,y,W-20,lh-4,4);
+      ctx.fill();
+      ctx.strokeStyle=l.color+'50';
+      ctx.lineWidth=1;
+      ctx.stroke();
+
+      ctx.font='bold 11px Space Mono, monospace';
+      ctx.fillStyle=l.color;
+      ctx.textAlign='left';
+      ctx.textBaseline='middle';
+      ctx.fillText(l.label,24,y+lh/2-8);
+      ctx.font='10px Space Grotesk, sans-serif';
+      ctx.fillStyle='rgba(232,237,245,0.5)';
+      ctx.fillText(l.sub,24,y+lh/2+8);
+
+      if(i<layers.length-1){
+        const ax=W-40, ay=y+lh-4;
+        ctx.beginPath();
+        ctx.strokeStyle=l.color+'60';
+        ctx.lineWidth=1;
+        ctx.moveTo(ax,ay); ctx.lineTo(ax,ay+4);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle=l.color+'60';
+        ctx.moveTo(ax,ay+6); ctx.lineTo(ax-4,ay+2); ctx.lineTo(ax+4,ay+2);
+        ctx.fill();
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 2 — NEURO-SYMBOLIC CANVAS
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('ns-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,anim=0,activeSignals=[],mode='idle';
+
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=360;
+  }
+  resize(); window.addEventListener('resize',resize);
+
+  const neuralLayers=[
+    {name:'INPUT',nodes:4,x:0.12},
+    {name:'HIDDEN 1',nodes:6,x:0.28},
+    {name:'HIDDEN 2',nodes:6,x:0.44},
+    {name:'OUTPUT',nodes:3,x:0.6},
+  ];
+  const symbolicBlocks=[
+    {name:'RULE ENGINE',x:0.72,y:0.25,w:0.22,h:0.2,color:'#7c6aff'},
+    {name:'KNOWLEDGE BASE',x:0.72,y:0.5,w:0.22,h:0.2,color:'#7c6aff'},
+    {name:'REASONER',x:0.72,y:0.75,w:0.22,h:0.15,color:'#7c6aff'},
+  ];
+
+  let signals=[];
+
+  window.nsInput=function(type){
+    const labels={image:'🖼️ Visual pattern detected → Neural processing...',text:'📝 Text parsed → Entities extracted...',sensor:'📡 Sensor spike at t=3.2s → Anomaly detected...'};
+    document.getElementById('ns-status').textContent=labels[type];
+    mode=type;
+    for(let i=0;i<8;i++) signals.push({
+      progress: -i*0.08,
+      layer: 0,
+      node: Math.floor(Math.random()*4),
+      color:'#7c6aff'
+    });
+  };
+
+  function getNodePos(layerIdx, nodeIdx, totalNodes){
+    const layer=neuralLayers[layerIdx];
+    const gap=H*0.65/totalNodes;
+    return {
+      x: layer.x*W,
+      y: H*0.15 + nodeIdx*gap + gap/2
+    };
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.015;
+
+    for(let l=0;l<neuralLayers.length-1;l++){
+      const la=neuralLayers[l], lb=neuralLayers[l+1];
+      for(let a=0;a<la.nodes;a++){
+        for(let b=0;b<lb.nodes;b++){
+          const pa=getNodePos(l,a,la.nodes), pb=getNodePos(l+1,b,lb.nodes);
+          ctx.beginPath();
+          ctx.strokeStyle='rgba(124,106,255,0.12)';
+          ctx.lineWidth=0.5;
+          ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+        }
+      }
+    }
+
+    neuralLayers.forEach((layer,li)=>{
+      for(let ni=0;ni<layer.nodes;ni++){
+        const p=getNodePos(li,ni,layer.nodes);
+        const glow=0.5+0.5*Math.sin(anim*2+li+ni);
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,8,0,Math.PI*2);
+        ctx.fillStyle=`rgba(124,106,255,${0.15+glow*0.2})`;
+        ctx.fill();
+        ctx.strokeStyle=`rgba(124,106,255,${0.4+glow*0.4})`;
+        ctx.lineWidth=1;
+        ctx.stroke();
+      }
+      ctx.font='8px Space Mono, monospace';
+      ctx.fillStyle='rgba(124,106,255,0.6)';
+      ctx.textAlign='center';
+      ctx.fillText(layer.name,layer.x*W,H*0.88);
+    });
+
+    const bridgeX=neuralLayers[3].x*W+20;
+    ctx.font='bold 9px Space Mono, monospace';
+    ctx.fillStyle='rgba(124,106,255,0.6)';
+    ctx.textAlign='center';
+    ctx.fillText('NEURAL',bridgeX+10,H/2-12);
+    ctx.fillText('OUTPUT',bridgeX+10,H/2+4);
+
+    ctx.beginPath();
+    ctx.strokeStyle='rgba(124,106,255,0.5)';
+    ctx.lineWidth=1.5;
+    ctx.setLineDash([4,4]);
+    ctx.moveTo(bridgeX+30,H/2); ctx.lineTo(W*0.69,H/2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.fillStyle='rgba(124,106,255,0.5)';
+    ctx.moveTo(W*0.7,H/2); ctx.lineTo(W*0.69-6,H/2-4); ctx.lineTo(W*0.69-6,H/2+4);
+    ctx.fill();
+
+    symbolicBlocks.forEach(b=>{
+      const bx=b.x*W, by=b.y*H-H*0.07, bw=b.w*W, bh=b.h*H;
+      ctx.beginPath();
+      ctx.roundRect(bx,by,bw,bh,4);
+      ctx.fillStyle='rgba(124,106,255,0.1)';
+      ctx.fill();
+      ctx.strokeStyle='rgba(124,106,255,0.4)';
+      ctx.lineWidth=1;
+      ctx.stroke();
+      ctx.font='bold 9px Space Mono, monospace';
+      ctx.fillStyle='#7c6aff';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(b.name,bx+bw/2,by+bh/2);
+    });
+
+    signals=signals.filter(s=>s.progress<1.05);
+    signals.forEach(s=>{
+      s.progress+=0.012;
+      if(s.progress<0) return;
+      const t=Math.min(s.progress,1);
+      const totalW=neuralLayers[3].x-neuralLayers[0].x;
+      const curLayerIdx=Math.min(Math.floor(t*neuralLayers.length), neuralLayers.length-1);
+      const li=Math.floor(t*neuralLayers.length);
+      if(li>=neuralLayers.length) return;
+      const layer=neuralLayers[li];
+      const p=getNodePos(li, s.node%layer.nodes, layer.nodes);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,12,0,Math.PI*2);
+      ctx.fillStyle='rgba(124,106,255,0.25)';
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 2 — NS COMPARE
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('ns-compare-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H;
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=260; }
+  resize(); window.addEventListener('resize',resize);
+  let anim=0;
+  const approaches=[
+    {label:'Pure Neural',perc:[0.9,0.3,0.2,0.8],color:'#ff6b35'},
+    {label:'Pure Symbolic',perc:[0.2,0.9,0.95,0.3],color:'#56cfe1'},
+    {label:'Neuro-Symbolic',perc:[0.85,0.85,0.8,0.85],color:'#7c6aff'},
+  ];
+  const metrics=['Perception','Reasoning','Explainability','Real-World'];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.008;
+    const barW=W/(approaches.length*metrics.length+approaches.length+1);
+    const maxH=H-60;
+    const startX=30;
+    metrics.forEach((m,mi)=>{
+      const groupX=startX + mi*(approaches.length+1)*barW + barW;
+      approaches.forEach((a,ai)=>{
+        const bx=groupX+ai*barW;
+        const targetH=a.perc[mi]*maxH;
+        const bh=targetH;
+        const by=H-30-bh;
+        ctx.fillStyle=a.color+'33';
+        ctx.fillRect(bx,by,barW-4,bh);
+        ctx.fillStyle=a.color;
+        ctx.fillRect(bx,H-30-6,barW-4,6);
+        const top=H-30-bh;
+        ctx.fillRect(bx,top,barW-4,3);
+      });
+      ctx.font='9px Space Mono, monospace';
+      ctx.fillStyle='rgba(232,237,245,0.5)';
+      ctx.textAlign='center';
+      ctx.fillText(m,groupX+approaches.length*barW/2,H-10);
+    });
+    approaches.forEach((a,i)=>{
+      ctx.fillStyle=a.color;
+      ctx.fillRect(10+i*110,10,12,12);
+      ctx.font='9px Space Grotesk, sans-serif';
+      ctx.fillStyle=a.color;
+      ctx.textAlign='left';
+      ctx.fillText(a.label,28+i*110,21);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 3 — FEDERATED LEARNING
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('fed-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,anim=0,round=0,phase='idle',phaseT=0,packets=[];
+
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=360; }
+  resize(); window.addEventListener('resize',resize);
+
+  const deviceIcons=['📱','💻','🖥️','⌚','📡','🚗'];
+  const deviceColors=['#ff6b35','#ff8c5a','#ffa07a','#ff6b35','#ffa07a','#ff8c5a'];
+  let devices=[];
+
+  function buildDevices(){
+    devices=deviceIcons.map((icon,i)=>{
+      const angle=(i/6)*Math.PI*2 - Math.PI/2;
+      return {
+        x:W/2+Math.cos(angle)*W*0.3,
+        y:H/2+Math.sin(angle)*H*0.35,
+        icon, color:deviceColors[i],
+        localLoss:Math.random()*0.5+0.3,
+        progress:0, sending:false
+      };
+    });
+  }
+
+  window.fedStart=function(){
+    if(phase!=='idle') return;
+    round++;
+    phase='distribute';
+    phaseT=0;
+    packets=[];
+    document.getElementById('fed-status').textContent=`Round ${round} — Distributing global model to devices...`;
+    devices.forEach(d=>{ d.localLoss=Math.random()*0.4+0.1; d.progress=0; d.sending=false; });
+  };
+  window.fedReset=function(){
+    round=0; phase='idle'; packets=[]; phaseT=0;
+    buildDevices();
+    document.getElementById('fed-status').textContent='Press START ROUND to begin federated training';
+  };
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.015;
+    if(phase!=='idle') phaseT+=0.008;
+
+    const sx=W/2, sy=H/2;
+    ctx.beginPath();
+    ctx.arc(sx,sy,28,0,Math.PI*2);
+    ctx.fillStyle='#1a1020';
+    ctx.fill();
+    ctx.strokeStyle='rgba(255,107,53,0.6)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+    ctx.font='11px Space Mono, monospace';
+    ctx.fillStyle='#ff6b35';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('SERVER',sx,sy-6);
+    ctx.font='9px Space Grotesk';
+    ctx.fillStyle='rgba(255,107,53,0.6)';
+    ctx.fillText(`Round ${round}`,sx,sy+8);
+
+    devices.forEach(d=>{
+      ctx.beginPath();
+      ctx.strokeStyle='rgba(255,107,53,0.12)';
+      ctx.lineWidth=1;
+      ctx.setLineDash([3,5]);
+      ctx.moveTo(d.x,d.y); ctx.lineTo(sx,sy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    if(phase==='distribute' && phaseT>1){
+      phase='train'; phaseT=0;
+      document.getElementById('fed-status').textContent=`Round ${round} — Devices training locally on private data...`;
+    }
+    if(phase==='train' && phaseT>1.5){
+      phase='aggregate'; phaseT=0;
+      document.getElementById('fed-status').textContent=`Round ${round} — Aggregating model updates (FedAvg)...`;
+      devices.forEach(d=>d.sending=true);
+    }
+    if(phase==='aggregate' && phaseT>1.5){
+      phase='idle'; phaseT=0;
+      document.getElementById('fed-status').textContent=`Round ${round} complete ✓ — Global model improved! Press START for next round.`;
+    }
+
+    devices.forEach((d,i)=>{
+      let t=0;
+      if(phase==='distribute') t=Math.min(phaseT,1);
+      else if(phase==='train') t=1;
+      else if(phase==='aggregate') t=1-Math.min(phaseT,1);
+      const px=d.sending && phase==='aggregate' ?
+        d.x+(sx-d.x)*(1-Math.min(phaseT,1)) :
+        sx+(d.x-sx)*t;
+      const py=d.sending && phase==='aggregate' ?
+        d.y+(sy-d.y)*(1-Math.min(phaseT,1)) :
+        sy+(d.y-sy)*t;
+      if(phase==='distribute'||phase==='aggregate'){
+        ctx.beginPath();
+        ctx.arc(px,py,6,0,Math.PI*2);
+        ctx.fillStyle=d.color+'cc';
+        ctx.fill();
+      }
+
+      ctx.save();
+      const glow=phase==='train'?0.5+0.5*Math.sin(anim*3+i):0;
+      if(glow>0){ ctx.shadowColor=d.color; ctx.shadowBlur=glow*20; }
+      ctx.beginPath();
+      ctx.arc(d.x,d.y,18,0,Math.PI*2);
+      ctx.fillStyle='#0c1120';
+      ctx.fill();
+      ctx.strokeStyle=d.color+(phase==='train'?'cc':'60');
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      ctx.font='14px serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(d.icon,d.x,d.y);
+      ctx.font='7px Space Mono, monospace';
+      ctx.fillStyle=d.color+'80';
+      ctx.fillText(`loss:${d.localLoss.toFixed(2)}`,d.x,d.y+26);
+      ctx.restore();
+
+      ctx.font='8px sans-serif';
+      ctx.fillText('🔒',d.x+12,d.y-12);
+    });
+
+    requestAnimationFrame(draw);
+  }
+  buildDevices();
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 3 — FEDAVG CANVAS
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('fedavg-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H;
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=200; }
+  resize(); window.addEventListener('resize',resize);
+  let anim=0;
+  const steps=[
+    {label:'Global Model\nDistributed',icon:'📡',color:'#ff6b35'},
+    {label:'Local Training\n(No data sharing)',icon:'🔒',color:'#ffd166'},
+    {label:'Gradients\nUploaded',icon:'⬆',color:'#ff6b35'},
+    {label:'FedAvg\nAggregation',icon:'⚡',color:'#7c6aff'},
+    {label:'Improved\nGlobal Model',icon:'✓',color:'#00f5c4'},
+  ];
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    anim+=0.01;
+    const gap=W/(steps.length+1);
+    steps.forEach((s,i)=>{
+      const x=(i+1)*gap, y=H/2;
+      const active=(anim*0.4)%steps.length;
+      const isActive=Math.abs(active-i)<0.8;
+      ctx.save();
+      if(isActive){ ctx.shadowColor=s.color; ctx.shadowBlur=20; }
+      ctx.beginPath();
+      ctx.arc(x,y,22,0,Math.PI*2);
+      ctx.fillStyle=isActive?s.color+'30':'#0c1120';
+      ctx.fill();
+      ctx.strokeStyle=isActive?s.color:s.color+'50';
+      ctx.lineWidth=isActive?2:1;
+      ctx.stroke();
+      ctx.font='14px serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(s.icon,x,y);
+      ctx.font='8px Space Grotesk, sans-serif';
+      ctx.fillStyle=s.color+'cc';
+      const lines=s.label.split('\n');
+      lines.forEach((l,li)=>ctx.fillText(l,x,y+32+li*12));
+      ctx.restore();
+      if(i<steps.length-1){
+        ctx.beginPath();
+        ctx.strokeStyle=s.color+'30';
+        ctx.lineWidth=1;
+        ctx.setLineDash([4,4]);
+        ctx.moveTo(x+26,y); ctx.lineTo((i+2)*gap-26,y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 4 — SWARM CANVAS
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('swarm-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[],targets=[],swarmMode='pso';
+  let globalBest={x:0,y:0,fitness:Infinity};
+
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=380; }
+  resize(); window.addEventListener('resize',resize);
+
+  function initParticles(){
+    particles=[];
+    for(let i=0;i<40;i++){
+      const x=Math.random()*W, y=Math.random()*H;
+      particles.push({
+        x,y,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,
+        pbx:x,pby:y,pbFitness:Infinity,
+        trail:[],color:'#ffd166',
+        pheromone:0
+      });
+    }
+    targets=[{x:W*0.7,y:H*0.3,r:20,active:true}];
+    globalBest={x:W/2,y:H/2,fitness:Infinity};
+  }
+
+  window.swarmToggle=function(){
+    swarmMode=swarmMode==='pso'?'aco':'pso';
+    document.getElementById('swarm-mode-btn').textContent=swarmMode==='pso'?'🐝 PSO MODE':'🐜 ACO MODE';
+    document.getElementById('swarm-status').textContent=`Switched to ${swarmMode==='pso'?'Particle Swarm':'Ant Colony'} mode`;
+    initParticles();
+  };
+  window.swarmReset=function(){ initParticles(); };
+  window.swarmAddFood=function(){
+    targets.push({x:Math.random()*W*0.8+W*0.1,y:Math.random()*H*0.8+H*0.1,r:16,active:true});
+  };
+
+  canvas.addEventListener('click',function(e){
+    const rect=canvas.getBoundingClientRect();
+    targets.push({x:e.clientX-rect.left,y:e.clientY-rect.top,r:16,active:true});
+    document.getElementById('swarm-status').textContent='New target added — swarm converging!';
+  });
+
+  let anim=0;
+  function draw(){
+    ctx.fillStyle='rgba(3,6,9,0.15)';
+    ctx.fillRect(0,0,W,H);
+    anim+=1;
+
+    if(swarmMode==='pso'){
+      particles.forEach(p=>{
+        const w=0.7, c1=1.5, c2=1.5;
+        targets.forEach(t=>{
+          const dist=Math.hypot(p.x-t.x,p.y-t.y);
+          const fit=dist;
+          if(fit<p.pbFitness){ p.pbFitness=fit; p.pbx=p.x; p.pby=p.y; }
+          if(fit<globalBest.fitness){ globalBest.fitness=fit; globalBest.x=p.x; globalBest.y=p.y; }
+        });
+        p.vx=w*p.vx+c1*Math.random()*(p.pbx-p.x)+c2*Math.random()*(globalBest.x-p.x);
+        p.vy=w*p.vy+c1*Math.random()*(p.pby-p.y)+c2*Math.random()*(globalBest.y-p.y);
+        const speed=Math.hypot(p.vx,p.vy);
+        if(speed>3){ p.vx*=3/speed; p.vy*=3/speed; }
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+        p.trail.push({x:p.x,y:p.y,a:0.6});
+        if(p.trail.length>12) p.trail.shift();
+      });
+    } else {
+      particles.forEach(p=>{
+        if(targets.length){
+          const t=targets[Math.floor(Math.random()*targets.length)];
+          const dist=Math.hypot(p.x-t.x,p.y-t.y);
+          if(dist>5){
+            const ang=Math.atan2(t.y-p.y,t.x-p.x)+( Math.random()-0.5)*0.8;
+            p.vx=Math.cos(ang)*2.5;
+            p.vy=Math.sin(ang)*2.5;
+          }
+        }
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+        p.trail.push({x:p.x,y:p.y,a:0.5});
+        if(p.trail.length>18) p.trail.shift();
+      });
+    }
+
+    particles.forEach(p=>{
+      p.trail.forEach((pt,i)=>{
+        const alpha=(i/p.trail.length)*0.4;
+        ctx.beginPath();
+        ctx.arc(pt.x,pt.y,1.5,0,Math.PI*2);
+        ctx.fillStyle=swarmMode==='pso'?`rgba(255,209,102,${alpha})`:`rgba(255,107,53,${alpha})`;
+        ctx.fill();
+      });
+    });
+
+    particles.forEach(p=>{
+      const nearTarget=targets.some(t=>Math.hypot(p.x-t.x,p.y-t.y)<30);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,3.5,0,Math.PI*2);
+      ctx.fillStyle=nearTarget?'#00f5c4':(swarmMode==='pso'?'#ffd166':'#ff6b35');
+      ctx.fill();
+    });
+
+    targets.forEach(t=>{
+      ctx.save();
+      ctx.shadowColor='#ffd166';
+      ctx.shadowBlur=20;
+      ctx.beginPath();
+      const r=t.r+Math.sin(anim*0.05)*4;
+      ctx.arc(t.x,t.y,r,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,209,102,0.5)';
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      ctx.font='16px serif';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText('🎯',t.x,t.y);
+      ctx.restore();
+    });
+
+    if(swarmMode==='pso'){
+      ctx.beginPath();
+      ctx.arc(globalBest.x,globalBest.y,8,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,245,196,0.4)';
+      ctx.fill();
+      ctx.font='7px Space Mono, monospace';
+      ctx.fillStyle='rgba(0,245,196,0.8)';
+      ctx.textAlign='center';
+      ctx.fillText('G_BEST',globalBest.x,globalBest.y-12);
+    }
+
+    ctx.font='9px Space Mono, monospace';
+    ctx.fillStyle='rgba(255,209,102,0.5)';
+    ctx.textAlign='left';
+    ctx.fillText(swarmMode==='pso'?'PSO — Particles seek global best':'ACO — Agents follow pheromone trails',12,20);
+
+    requestAnimationFrame(draw);
+  }
+
+  initParticles();
+  draw();
+})();
+
+// ──────────────────────────────────────────────
+//  MODULE 4 — GENETIC ALGORITHM
+// ──────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('ga-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H;
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=220; }
+  resize(); window.addEventListener('resize',resize);
+
+  let generation=0;
+  let population=[];
+  const POP=20, GENES=16;
+
+  function initPop(){
+    population=[];
+    for(let i=0;i<POP;i++){
+      population.push({
+        genes:Array.from({length:GENES},()=>Math.random()>0.5?1:0),
+        fitness:0
+      });
+    }
+    evalPop();
+  }
+  function evalPop(){
+    population.forEach(ind=>{
+      ind.fitness=ind.genes.reduce((a,b)=>a+b,0)/GENES;
+    });
+    population.sort((a,b)=>b.fitness-a.fitness);
+  }
+  function evolve(){
+    const elite=population.slice(0,4);
+    const next=[...elite.map(e=>({...e,genes:[...e.genes]}))];
+    while(next.length<POP){
+      const p1=elite[Math.floor(Math.random()*elite.length)];
+      const p2=elite[Math.floor(Math.random()*elite.length)];
+      const cut=Math.floor(Math.random()*GENES);
+      const child={genes:[...p1.genes.slice(0,cut),...p2.genes.slice(cut)],fitness:0};
+      child.genes=child.genes.map(g=>Math.random()<0.05?1-g:g);
+      next.push(child);
+    }
+    population=next;
+    evalPop();
+    generation++;
+  }
+
+  window.gaStep=function(){
+    evolve();
+    document.getElementById('ga-status').textContent=`Generation ${generation} — Best fitness: ${(population[0].fitness*100).toFixed(0)}%`;
+  };
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const cellW=W/(POP+2), cellH=(H-30)/GENES;
+    population.forEach((ind,i)=>{
+      const x=20+i*cellW;
+      const elite=i<4;
+      ind.genes.forEach((g,j)=>{
+        const y=8+j*cellH;
+        ctx.fillStyle=g?`rgba(255,209,102,${elite?0.9:0.45})`:`rgba(255,107,53,${elite?0.3:0.1})`;
+        ctx.fillRect(x,y,cellW-2,cellH-1);
+      });
+      ctx.fillStyle=elite?'#00f5c4':'rgba(255,209,102,0.5)';
+      ctx.fillRect(x,H-24,cellW-2,(H-24-4)*ind.fitness*0.9);
+      if(elite){
+        ctx.font='7px Space Mono, monospace';
+        ctx.fillStyle='#00f5c4';
+        ctx.textAlign='center';
+        ctx.fillText('ELITE',x+cellW/2,H-8);
+      }
+    });
+    ctx.font='8px Space Mono, monospace';
+    ctx.fillStyle='rgba(255,209,102,0.5)';
+    ctx.textAlign='left';
+    ctx.fillText('↑ Gene expression (yellow=1, red=0)  ↓ Fitness',12,H-6);
+    requestAnimationFrame(draw);
+  }
+  initPop();
+  draw();
+})();
+</script>
+</body>
+</html>
