@@ -439,7 +439,7 @@
   .footer-name { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--accent1); }
   .footer-info { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); line-height: 1.8; text-align: right; }
 
-  /* ── NEW: CASE STUDY MODAL ── */
+  /* ── CASE STUDY MODAL ── */
   .cs-modal {
     position: fixed; inset: 0; z-index: 9999;
     background: rgba(5,8,16,0.9); backdrop-filter: blur(8px);
@@ -993,56 +993,26 @@ SECTOR 1
 <div id="cstab-1" class="cs-tab-content active" style="--tc: var(--accent1)">
 
   <div class="cs-section">
-    <h5>The Situation (2:00 AM Crisis)</h5>
+    <h5>The Situation (T-Minus 15 Minutes)</h5>
     <p>
-      Pipe #42 has broken. Your factory's AI camera is looking at the white gas and wrongly saying:
-      <code>Status: Normal Steam</code>.
-      At the same time, your chemical sensor reads <code>800</code>.
-      A few seconds later, the chemical sensor battery dies due to freezing gas and starts sending a
-      <code>NULL</code> error message.
+      "You are the start of the pipeline. In 15 minutes, your physical sensor will trigger a raw reading of '800' and then its battery will die (NULL). At the same time, the factory's AI camera will hallucinate and report the room is 'Safe'.
     </p>
-  </div>
-
-  <div class="cs-section">
-    <h5>Your Engine to Build (On A4 Paper)</h5>
-    <ul>
-      <li>Semantic Data Flowchart</li>
-      <li>Standardized JSON Payload Structure</li>
-    </ul>
-  </div>
-
-  <div class="cs-section">
-    <h5>Group Discussion Question</h5>
     <p>
-      "If you pass the raw number<code> '800'</code> to the next team, they won't know what it means—is it safe pressure, normal heat, or a toxic leak? Discuss and design a semantic logic rule that gives this number exact physical context and a hazard tag. You must also ignore the wrong camera and safely handle the NULL battery error. Write down the final, clear 'Data Payload' you will hand over as fuel to Sector 2."
+      <strong>Your Task:</strong> Build the engine now. Write a standardized 'Data Passport' (a JSON payload) that tags the number '800' with exact physical meaning (Carbon Monoxide, PPM) and hazard level. How do you format this payload so that when you hand it to Sector 2, their machine instantly knows it is a lethal emergency and completely ignores the camera?"
     </p>
-
-<ul>
-  <li>Tags the number as a lethal hazard.</li>
-  <li>Ignores the incorrect camera classification.</li>
-  <li>Safely handles the NULL battery failure.</li>
-  <li>Produces the final Hazard Payload for Sector 2.</li>
-</ul>
-
   </div>
 
   <div class="cs-section">
     <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
 
-<div class="cs-prompt">
+    <div class="cs-prompt">
+"Act as a Senior Semantic Web Architect. I am submitting my team's 'Data Passport' (JSON payload) designed to take a raw sensor reading of '800' (with a dead battery) and tag it as a Lethal CO emergency, while completely ignoring a hallucinating AI camera.
 
-"Act as a Senior Semantic Web Architect.
-
-I will provide my JSON-LD(a lightweight, machine-readable data format)schema that translates a raw '800' reading and a 'NULL' battery error into a hazard payload, ignoring a hallucinating AI camera.
-
-Point out the single biggest vulnerability in my logic regarding data formatting or missing context.
-
-Provide a mathematical or structural improvement to handle the NULL error safely.
-
-Generate a clear text-based workflow diagram (ASCII or Mermaid) showing this data fusion process.
-
-Finally, based on my logic, output the final, clean 'Hazard Payload' (in JSON format) exactly as I need to hand it over to Sector 2." </div>
-
+Your Task:
+1. Review and refine our logic to ensure it is perfectly formatted.
+2. Output the final, flawless JSON payload exactly as it needs to be handed to Sector 2.
+3. Draw a visual architecture diagram (using Mermaid.js syntax or clean ASCII art) showing how the raw sensor data and camera feed filter through the semantic ontology into the final payload."
+    </div>
   </div>
 
 </div>
@@ -1054,55 +1024,26 @@ SECTOR 2
 <div id="cstab-2" class="cs-tab-content" style="--tc: var(--accent2)">
 
   <div class="cs-section">
-    <h5>The Situation (2:00 AM Crisis)</h5>
+    <h5>The Situation (T-Minus 15 Minutes)</h5>
     <p>
-      Sector 1's data takes half a second to reach you.
-      During that time, your factory's Deep Learning AI is hallucinating.
-      It is <strong>94% confident</strong> that the white gas is only steam and is voting to:
-      <code>Keep Factory Running</code>.
+      "You are the safety gate. Assume Sector 1 will successfully hand you a validated toxic gas alert in 15 minutes. However, our factory's Deep Learning Neural Network is 94% confident the gas is just harmless steam.
     </p>
-  </div>
-
-  <div class="cs-section">
-    <h5>Your Engine to Build (On A4 Paper)</h5>
-    <ul>
-      <li>Deterministic Logic Tree</li>
-      <li>Truth Table Override System</li>
-    </ul>
-  </div>
-
-  <div class="cs-section">
-    <h5>Group Discussion Question</h5>
-
-<p>
- "You cannot rely on an AI's guesswork during a disaster. You are about to receive the data payload from Sector 1. Discuss and draw the exact mathematical rule your logic gate uses to completely override the AI's 94% confidence. If the camera gets completely blinded by black smoke and outputs nothing, what must your system's default safety action be? Discuss this, apply your rule, and generate a final binary output of 1 (Evacuate) or 0 (Hold) to hand over as fuel to Sector 3."
-</p>
-
-<ul>
-  <li>Should smoke blindness trigger Safe-Stop or Safe-Run?</li>
-  <li>How will symbolic logic override the neural network?</li>
-  <li>Produce Binary Output: 1 (Evacuate) or 0 (Hold).</li>
-</ul>
-
+    <p>
+      <strong>Your Task:</strong> Build the engine now. Draw a strict 'Logic Gate' (an If/Then flowchart) that creates a safety cage around the AI. Your logic must mathematically override the hallucinating neural network, account for the camera being blinded by smoke, and force a final system output of '1' (Evacuate) to hand over to Sector 3."
+    </p>
   </div>
 
   <div class="cs-section">
     <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
 
-<div class="cs-prompt">
+    <div class="cs-prompt">
+"Act as a Functional Safety Engineer. I am submitting my team's 'Logic Gate' engine designed to receive a toxic gas payload and mathematically override our factory's Deep Learning AI (which is 94% confident the gas is just steam).
 
-"Act as a Functional Safety Engineer.
-
-I will provide my symbolic logic tree that is designed to take Sector 1's hazard payload and completely override a 94% confident Neural Network.
-
-Point out any race conditions or logical flaws in my fallback rule, especially if the camera gets blinded by smoke.
-
-Provide a mathematical improvement for my threshold settings (e.g., how to calculate false-positive vs. false-negative risks).
-
-Generate a clear text-based decision-tree diagram (ASCII or Mermaid) of my logic gate.
-
-Finally, based on my logic, output the final, strict Binary Flag (1 for Evacuate, or 0 for Hold) exactly as I need to hand it over to Sector 3." </div>
-
+Your Task:
+1. Review and refine our If/Then logic rules to ensure there are zero fatal loopholes (especially if the camera is blinded by smoke).
+2. Output the final strict system command (a binary '1' for Evacuate).
+3. Draw a visual decision-tree diagram (using Mermaid.js syntax or clean ASCII art) showing the exact logic flow from the incoming Sector 1 payload to the final override decision."
+    </div>
   </div>
 
 </div>
@@ -1114,66 +1055,26 @@ SECTOR 3
 <div id="cstab-3" class="cs-tab-content" style="--tc: var(--accent4)">
 
   <div class="cs-section">
-    <h5>The Situation (2:00 AM Crisis)</h5>
-
-<p>
-  Sector 2 successfully triggered evacuation.
-  The main power breaker shut down the factory and the 5G tower died.
-  The village 2 km away must be warned.
-  There is no internet.
-  Only Bluetooth connections between 40 mobile phones remain.
-</p>
-
-<p>
-  30% of phones have dead batteries.
-  One hacked Smart TV is broadcasting:
-  <code>ALL CLEAR - STAY INSIDE</code>.
-</p>
-
-  </div>
-
-  <div class="cs-section">
-    <h5>Your Engine to Build (On A4 Paper)</h5>
-
-
-<ul>
-  <li>Nature-Inspired Mesh Routing Map</li>
-  <li>Decentralized P2P Communication Protocol</li>
-</ul>
-
-
-  </div>
-
-  <div class="cs-section">
-    <h5>Group Discussion Question</h5>
-    <p>"You just received the binary alert command from Sector 2. If every phone broadcasts this alert to every other phone simultaneously, the local network will instantly crash. Discuss and design a specific nature-inspired rule that restricts how phones select their neighbors to pass the message to. How does the swarm bypass dead zones and reach consensus to ignore the hacked TV? Map the route and generate a 'Routing Log Vector' to hand over as fuel to Sector 4."
+    <h5>The Situation (T-Minus 15 Minutes)</h5>
+    <p>
+      "You are the emergency broadcast system. Assume Sector 2 will successfully hand you a '1' (Evacuate) command in 15 minutes. The explosion has destroyed the main cell tower, leaving only 40 mobile phones with Bluetooth. Some are dead, and one is hacked.
     </p>
-
-<ul>
-  <li>Prevent Bluetooth broadcast storms.</li>
-  <li>Choose only 2–3 neighbors for message forwarding.</li>
-  <li>Bypass dead phones.</li>
-  <li>Ignore the hacked Smart TV.</li>
-  <li>Generate a Routing Log Vector for Sector 4.</li>
-</ul>
-
+    <p>
+      <strong>Your Task:</strong> Build the engine now. Draw a decentralized routing map and write a simple 'Ant-like' rule for the offline phones to follow. How will your engine safely bounce the evacuation signal from phone to phone to reach the exit without a central Wi-Fi router telling them where to go?"
+    </p>
   </div>
 
   <div class="cs-section">
     <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
 
-<div class="cs-prompt">
+    <div class="cs-prompt">
+"Act as a Swarm Intelligence Researcher. I am submitting my team's decentralized routing engine for 40 offline mobile phones. They must bounce an evacuation command to the exit without a central Wi-Fi router, bypassing dead batteries and a hacked TV.
 
-"Act as a Swarm Intelligence Researcher.
-
-I will provide my nature-inspired routing protocol designed to spread Sector 2's evacuation flag across 40 offline mobile phones (where 30% have dead batteries and 1 is a hacked node broadcasting false safety).
-
-Calculate the mathematical probability of an unrecoverable network split and suggest an improvement to my consensus rule to ignore the hacked node.
-
-Generate a clear text-based mesh routing diagram (ASCII or Mermaid) showing how the packet hops between nodes.
-
-Finally, based on my routing rules, output a simulated, clean 'Routing Log Vector' (showing the path data) exactly as I need to hand it over to Sector 4 for their machine learning model." </div>
-
+Your Task:
+1. Review and refine our 'Ant-like' peer-to-peer routing rules to ensure they actually prevent a network crash.
+2. Output a simulated 'Routing Log Vector' (showing the successful path the packet took).
+3. Draw a visual network mesh diagram (using Mermaid.js syntax or clean ASCII art) showing the data packet bypassing the dead/hacked nodes to reach its destination."
+    </div>
   </div>
 
 </div>
@@ -1185,70 +1086,29 @@ SECTOR 4
 <div id="cstab-4" class="cs-tab-content" style="--tc: var(--accent3)">
 
   <div class="cs-section">
-    <h5>The Situation (72 Hours Later)</h5>
-
-<p>
-  The village evacuation succeeded.
-  Internet service has been restored.
-  Routing logs from Sector 3 are available for training a better disaster-response AI.
-</p>
-
-<p>
-  However, those logs contain:
-</p>
-
-<ul>
-  <li>Villager bedroom GPS coordinates</li>
-  <li>Private MAC addresses</li>
-  <li>Personally identifiable routing data</li>
-</ul>
-
-  </div>
-
-  <div class="cs-section">
-    <h5>Your Engine to Build (On A4 Paper)</h5>
-
-<ul>
-  <li>Federated Aggregation Pipeline</li>
-  <li>Local SGD Training Architecture</li>
-</ul>
-
-  </div>
-
-  <div class="cs-section">
-    <h5>Group Discussion Question</h5>
+    <h5>The Situation (T-Minus 15 Minutes)</h5>
     <p>
-      "You have received the routing logs from Sector 3, but you cannot upload them to the cloud due to strict privacy laws. Discuss and draw the exact mathematical step that happens directly on the phones to extract intelligence without sharing the raw data. How does the cloud securely combine these individual updates without ever exposing a villager's location? Finally, draw how this new global intelligence is pushed backward down the pipeline to make Sector 1's sensors smarter for the future."
+      "You are the intelligence extractor. Assume Sector 3 will successfully hand you their survival routing logs in 15 minutes. We need to train our Global Disaster AI to handle future crises, but uploading those logs is illegal because they contain private GPS coordinates.
     </p>
-<ul>
-  <li>Train directly on phones using Local SGD.</li>
-  <li>Extract only weight updates (Δw).</li>
-  <li>Prevent private location leakage.</li>
-  <li>Aggregate securely in the cloud.</li>
-  <li>Push improved intelligence back to Sector 1 sensors.</li>
-</ul>
-
+    <p>
+      <strong>Your Task:</strong> Build the engine now. Draw a workflow where the empty AI model travels down to the phones, learns the survival patterns locally, and safely extracts only generic 'Lessons Learned' with zero private data attached. Draw the final loop showing how the cloud combines these lessons to push a new Master Rule back to Sector 1."
+    </p>
   </div>
 
   <div class="cs-section">
     <h5>PHASE 2: AI COMPILER LINTER PROMPT</h5>
 
-<div class="cs-prompt">
+    <div class="cs-prompt">
+"Act as a Privacy-Preserving AI Architect. I am submitting my team's Federated Learning extraction engine. We need to process Sector 3's routing logs directly on the phones to find survival patterns, without ever exposing the private GPS coordinates to the cloud.
 
-"Act as a Cryptographic Machine Learning Specialist.
-
-I will provide my Federated Aggregation pipeline that processes the routing logs from Sector 3 using Local SGD.
-
-Explain how a hacker could execute a Model Inversion Attack to track a villager's location from my data, and provide the exact mathematical formula for Differential Privacy noise injection to prevent this.
-
-Generate a clear text-based architecture diagram (ASCII or Mermaid) showing the local-to-cloud aggregation flow.
-
-Finally, output the final compiled Weight Update (Δw) format exactly as it needs to be pushed backward down the pipeline to make Sector 1's physical sensors smarter." </div>
-
+Your Task:
+1. Review and refine our workflow to ensure 0% of the private data leaves the edge device.
+2. Output the final 'Master Rule' (the safe, generic lesson learned) that will be pushed back to Sector 1.
+3. Draw a visual architecture diagram (using Mermaid.js syntax or clean ASCII art) showing the empty AI model traveling to the edge device, extracting the generic rule, and pushing it back to the cloud."
+    </div>
   </div>
 
 </div>
-
 
   </div>
 </div>
@@ -1344,7 +1204,7 @@ function quiz(btn, type){
 }
 
 // ──────────────────────────────────────────────
-//  NEW: CASE STUDY MODAL LOGIC
+//  CASE STUDY MODAL LOGIC
 // ──────────────────────────────────────────────
 function openCaseStudy() {
   document.getElementById('csModal').classList.add('show');
